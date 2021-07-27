@@ -2,6 +2,7 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
 const cTable = require('console.table');
+const {addDepartment} = require('./helpers/questions');
 
 // Connect to database
 const db = mysql.createConnection(
@@ -9,7 +10,7 @@ const db = mysql.createConnection(
       host: 'localhost',
       user: 'root',
       // Your password here
-      password: 'Kiseki24!',
+      password: '',
       database: 'tracker_db'
     },
     console.log(`Connected to the tracker_db database.`)
@@ -43,6 +44,9 @@ const db = mysql.createConnection(
           }
           else if (choice === 'View all employees') {
               viewEmployees();
+          }
+          else if (choice === 'Add a department') {
+              addDept();
           }
       })
   }
@@ -85,7 +89,7 @@ function viewEmployees() {
                             ORDER BY emp.id;`
     db.promise().query(empDisplay)
         .then(emp => {
-            console.log('emp', emp[0]);
+            // console.log('emp', emp[0]);
             console.table(emp[0]);
             questions();
         })
@@ -93,3 +97,18 @@ function viewEmployees() {
             console.error('Error', err);
         })
 }
+
+function addDept() {
+    inquirer.prompt(addDepartment) 
+        .then(input => {
+            input = input.newDepartment;
+            db.query(`INSERT INTO department (name)
+                     VALUES ('${input}')`, 
+                     function (err ,result) {
+                         if (err) throw err;
+                         console.log(`${input} has been added to the database!`)
+                         questions();
+                     })
+        })
+}
+
