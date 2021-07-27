@@ -38,17 +38,36 @@ const db = mysql.createConnection(
           if (choice === 'View all departments') {
               viewDepartments();
           }
+          else if (choice === 'View all roles') {
+              viewRoles();
+          }
       })
   }
 
 function viewDepartments() {
     db.promise().query(`SELECT * FROM department`)
         .then(dept => {
-            console.log('dept', dept[0]);
+            // console.log('dept', dept[0]);
             console.table(dept[0]);
             questions();
         })
         .catch(err => {
-            console.log('Error', err);
+            console.error('Error', err);
+        })
+}
+
+function viewRoles() {
+    const roleDisplay = `SELECT role.id, role.title, department.name AS department, role.salary FROM role
+                            INNER JOIN department ON role.department_id = department.id
+                            ORDER BY role.id;`
+
+    db.promise().query(roleDisplay)
+        .then(role => {
+            // console.log('role', role[0]);
+            console.table(role[0]);
+            questions();
+        })
+        .catch(err => {
+            console.error('Error', err);
         })
 }
