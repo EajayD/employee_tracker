@@ -41,6 +41,9 @@ const db = mysql.createConnection(
           else if (choice === 'View all roles') {
               viewRoles();
           }
+          else if (choice === 'View all employees') {
+              viewEmployees();
+          }
       })
   }
 
@@ -65,6 +68,25 @@ function viewRoles() {
         .then(role => {
             // console.log('role', role[0]);
             console.table(role[0]);
+            questions();
+        })
+        .catch(err => {
+            console.error('Error', err);
+        })
+}
+
+// declared employee table as emp due to multiple keys in table
+function viewEmployees() {
+    const empDisplay = `SELECT emp.id, emp.first_name, emp.last_name, role.title AS title, 
+                        department.name AS department, role.salary AS salary, (SELECT CONCAT(first_name, ' ', last_name) FROM employee WHERE id = emp.manager_id) AS manager 
+                        FROM employee emp
+                            INNER JOIN role ON emp.role_id = role.id
+                            INNER JOIN department ON role.department_id = department.id
+                            ORDER BY emp.id;`
+    db.promise().query(empDisplay)
+        .then(emp => {
+            console.log('emp', emp[0]);
+            console.table(emp[0]);
             questions();
         })
         .catch(err => {
