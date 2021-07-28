@@ -2,7 +2,7 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
 const cTable = require('console.table');
-const {addDepartment, addRoles} = require('./helpers/questions');
+const {addDepartment, addRoles, addEmployees} = require('./helpers/questions');
 
 // Connect to database
 const db = mysql.createConnection(
@@ -50,6 +50,9 @@ const db = mysql.createConnection(
           }
           else if (choice === 'Add a role') {
               addRole();
+          }
+          else if (choice === 'Add an employee') {
+              addEmp();
           }
       })
   }
@@ -127,3 +130,20 @@ function addRole() {
                       })
         })
 }
+
+function addEmp() {
+        inquirer.prompt(addEmployees)
+        .then(input => {
+            let fullName = input.newEmpManagerRole.split(' ');
+            db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id)
+                      VALUES ('${input.newEmpFirstName}', '${input.newEmpLastName}',
+                      (SELECT id FROM role WHERE role.title = '${input.newEmpRole}'),
+                      (SELECT emp.id FROM employee emp WHERE emp.first_name = '${fullName[0]}' AND emp.last_name = '${fullName[1]}') 
+                      );`,
+                      function (err, result) {
+                          if (err) throw err;
+                          console.log(`${input.newEmpFirstName} ${input.newEmpLastName} has been added to the Database!`);
+                          questions();
+                      })
+        })
+    }
