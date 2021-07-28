@@ -2,7 +2,7 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
 const cTable = require('console.table');
-const {addDepartment} = require('./helpers/questions');
+const {addDepartment, addRoles} = require('./helpers/questions');
 
 // Connect to database
 const db = mysql.createConnection(
@@ -48,6 +48,9 @@ const db = mysql.createConnection(
           else if (choice === 'Add a department') {
               addDept();
           }
+          else if (choice === 'Add a role') {
+              addRole();
+          }
       })
   }
 
@@ -76,7 +79,7 @@ function viewRoles() {
         })
         .catch(err => {
             console.error('Error', err);
-        })
+        });
 }
 
 // declared employee table as emp due to multiple keys in table
@@ -95,7 +98,7 @@ function viewEmployees() {
         })
         .catch(err => {
             console.error('Error', err);
-        })
+        });
 }
 
 function addDept() {
@@ -108,7 +111,19 @@ function addDept() {
                          if (err) throw err;
                          console.log(`${input} has been added to the database!`)
                          questions();
-                     })
-        })
+                     });
+        });
 }
 
+function addRole() {
+    inquirer.prompt(addRoles)
+        .then(input => {
+            db.query(`INSERT INTO role (title, salary, department_id)
+                      VALUES ('${input.newRole}', ${input.newRoleSalary}, (SELECT id FROM department WHERE department.name = '${input.newRoleDept}'));`,
+                      function (err, result) {
+                          if (err) throw err;
+                          console.log(`${input.newRole} has been added to the Database!`);
+                          questions();
+                      })
+        })
+}
