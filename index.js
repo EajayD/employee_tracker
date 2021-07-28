@@ -2,7 +2,7 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
 const cTable = require('console.table');
-const {addDepartment, addRoles, addEmployees} = require('./helpers/questions');
+const {addDepartment, addRoles, addEmployees, updateEmployees} = require('./helpers/questions');
 
 // Connect to database
 const db = mysql.createConnection(
@@ -53,6 +53,9 @@ const db = mysql.createConnection(
           }
           else if (choice === 'Add an employee') {
               addEmp();
+          }
+          else if (choice === 'Update an employee role') {
+              updateEmp();
           }
       })
   }
@@ -147,3 +150,26 @@ function addEmp() {
                       })
         })
     }
+
+function updateEmp() {
+    db.query(`SELECT CONCAT (first_name, " ", last_name), role.title AS title FROM employee
+              INNER JOIN role ON employee.role_id = role.id`,
+         (err, result) => {
+                  if (err) throw err;
+
+                  inquirer.prompt(updateEmployees)
+                  .then(input => {
+                    let fullName = input.changeEmp.split(' ');
+                      db.query(`UPDATE employee 
+                                SET role_id = (SELECT id FROM role WHERE title = '${input.changeRole}') 
+                                WHERE employee.first_name = '${fullName[0]}' AND employee.last_name = '${fullName[1]}'`,
+                                 function (err, result)  {
+                                    if (err) {
+                                        console.log(err);
+                                    }
+                                    console.log(`Database changed!`);
+                                    questions();
+                                })
+                  })
+              })
+}

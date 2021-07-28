@@ -66,9 +66,42 @@ const addEmployees = [
             'Jusis Albarea',
             'Tio Plato',
             'Alisa Reinford',
-            'Cassius Bright',
-            'None'
+            'Cassius Bright'
         ]
       }
 ]
-module.exports = {addDepartment, addRoles, addEmployees}
+
+const updateEmployees = [
+    {
+        type: 'list',
+        message: 'Which employee would you like to edit?',
+        name: 'changeEmp',
+        choices: [
+            'Jusis Albarea',
+            'Machias Regnitz',
+            'Tio Plato',
+            'Tita Russell',
+            'Alisa Reinford',
+            'Sharon Kreuger',
+            'Cassius Bright',
+            'Arios Maclaine'
+        ]
+    },
+
+    {
+        type: 'list',
+        message: 'Which role will you assign them?',
+        name: 'changeRole',
+        choices: [
+            'Sales Lead',
+            'Salesperson',
+            'Lead Engineer',
+            'Software Engineer',
+            'Account Manager',
+            'Accountant',
+            'Legal Team Lead',
+            'Lawyer'
+        ]
+    }
+]
+module.exports = {addDepartment, addRoles, addEmployees, updateEmployees}
