@@ -48,12 +48,9 @@ Below is a image preview  and video walkthrough of what to expect when you run t
 
 ## Built With
 
-* [HTML](https://developer.mozilla.org/en-US/docs/Web/HTML)
-* [CSS](https://developer.mozilla.org/en-US/docs/Web/CSS)
 * [Git](https://git-scm.com/about)
 * [Github](https://github.com/)
 * [Javascript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-* [Bootstrap](https://getbootstrap.com/docs/5.0/getting-started/introduction/)
 * [Node.js](https://nodejs.org/en/docs/)
 * [MYSQL](https://www.mysql.com/)
 * [Inquirer](https://www.npmjs.com/package/inquirer)
